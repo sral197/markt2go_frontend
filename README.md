@@ -1,4 +1,4 @@
-# Market App (marketapp)
+# Markt2Go App (Markt2Go)
 
 A Quasar Framework app
 
