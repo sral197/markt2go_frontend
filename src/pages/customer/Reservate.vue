@@ -8,79 +8,83 @@
       :breadcrumbList="breadcrumbList">
         {{sellerDetails.name}}
       </doc-header>
-        <seller-desc
-          :sellerDetails="sellerDetails"
-          :reservationAllowed="reservationAllowed">
-        </seller-desc>
-        <q-separator />
-        <q-stepper
-          v-model="step"
-          ref="stepper"
-          color="primary"
-          animated
-          flat
-          header-nav
-          :contracted="$q.screen.lt.md">
-          <q-step
-            :name="1"
-            title="Stelle deine Anfrage zusammen"
-            icon="settings"
-            :done="step > 1"
-            :header-nav="step > 1">
-          <step-fill-basked
-            :groups="sellerDetails.portfolio"
+        <div class="q-pa-md">
+          <seller-desc
+            :sellerDetails="sellerDetails"
             :reservationAllowed="reservationAllowed"
-            :newReservation="newReservation"
-          >
-          </step-fill-basked>
-          </q-step>
-          <q-step
-            :name="2"
-            title="Wähle einen Abholzeitpunkt"
-            icon="schedule"
-            :done="step > 2"
-            :header-nav="step > 2"
-          >
-            <step-select-timeslot
-              :timeslot="newReservation.timeslot"
-              :marketID="$route.params.marketID"
-              :sellerID="$route.params.sellerID"
-              v-on:selectTimeslot="selectTimeslot">
-            </step-select-timeslot>
-          </q-step>
+            class="q-pa-sm">
+          </seller-desc>
+          <q-separator class="q-ma-sm" />
+          <q-stepper
+            v-model="step"
+            ref="stepper"
+            class="q-pa-sm"
+            color="primary"
+            animated
+            flat
+            header-nav
+            :contracted="$q.screen.lt.md">
+            <q-step
+              :name="1"
+              title="Stelle deine Anfrage zusammen"
+              icon="settings"
+              :done="step > 1"
+              :header-nav="step > 1">
+            <step-fill-basked
+              :groups="sellerDetails.portfolio"
+              :reservationAllowed="reservationAllowed"
+              :newReservation="newReservation"
+            >
+            </step-fill-basked>
+            </q-step>
+            <q-step
+              :name="2"
+              title="Wähle einen Abholzeitpunkt"
+              icon="schedule"
+              :done="step > 2"
+              :header-nav="step > 2"
+            >
+              <step-select-timeslot
+                :timeslot="newReservation.timeslot"
+                :marketID="$route.params.marketID"
+                :sellerID="$route.params.sellerID"
+                v-on:selectTimeslot="selectTimeslot">
+              </step-select-timeslot>
+            </q-step>
 
-          <q-step
-            :name="3"
-            title="Bestätigung"
-            icon="assignment"
-            :header-nav="step > 3"
-          >
-            <step-confirm-reservation
-              :items="newReservation.items"
-              :timeslot="newReservation.timeslot"
-              :sellerDetails="sellerDetails"
-              :market="market">
-            </step-confirm-reservation>
-          </q-step>
+            <q-step
+              :name="3"
+              title="Bestätigung"
+              icon="assignment"
+              :header-nav="step > 3"
+            >
+              <step-confirm-reservation
+                :items="newReservation.items"
+                :timeslot="newReservation.timeslot"
+                :sellerDetails="sellerDetails"
+                :market="market">
+              </step-confirm-reservation>
+            </q-step>
 
-          <template v-slot:navigation>
-            <q-stepper-navigation>
-              <div  align="right">
-                <q-btn
-                  flat
-                  v-if="step > 1"
-                  color="primary"
-                  @click="$refs.stepper.previous()"
-                  label="Zurück" />
-                <q-btn
-                  :disabled="!reservationAllowed"
-                  @click="validateAndNext"
-                  color="primary"
-                  :label="step === 3 ? 'Anfragen' : 'Weiter'" />
-              </div>
-            </q-stepper-navigation>
-          </template>
-        </q-stepper>
+            <template v-slot:navigation>
+              <q-stepper-navigation>
+                <div  align="right">
+                  <q-btn
+                    flat
+                    v-if="step > 1"
+                    color="primary"
+                    @click="$refs.stepper.previous()"
+                    label="Zurück" />
+                  <q-btn
+                    :disabled="!reservationAllowed"
+                    @click="validateAndNext"
+                    color="primary"
+                    :label="step === 3 ? 'Anfragen' : 'Weiter'" />
+                </div>
+              </q-stepper-navigation>
+            </template>
+          </q-stepper>
+        </div>
       </div>
   </q-page>
 </template>

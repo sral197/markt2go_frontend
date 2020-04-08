@@ -1,8 +1,8 @@
 {
   "name": "markt2go",
-  "version": "0.9.0",
-  "description": "markt2Go.de - Bestell deinen Einkauf vor!",
-  "productName": "markt2Go.de",
+  "version": "0.9.1",
+  "description": "Markt2Go.de - Bestell deinen Einkauf vor!",
+  "productName": "Markt2Go.de",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
   "author": "sral197",

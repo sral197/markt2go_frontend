@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="q-px-md q-pt-md">
     <!-- Breadcrumb -->
-    <div class="q-pa-md q-gutter-sm">
+    <div class="q-gutter-sm">
       <q-breadcrumbs v-if="breadcrumbList">
-        <q-breadcrumbs-el label=" " icon="home" to="/" :class="{headerColor : breadcrumbList.length === 0}" />
+        <q-breadcrumbs-el label=" " icon="home" to="/market" :class="{headerColor : breadcrumbList.length === 0}" />
         <q-breadcrumbs-el v-for="(breadcrumb, i) in breadcrumbList" :key="breadcrumb.to"
           :label="breadcrumb.label"
           :icon="breadcrumb.icon"
@@ -13,7 +13,7 @@
     </div>
     <!-- Title -->
     <q-item>
-      <q-item-section avatar >
+      <q-item-section avatar v-if="icon">
         <q-icon
           :name="icon"
           style="font-size:30px"
@@ -27,7 +27,7 @@
         <q-item-label caption>{{caption}}</q-item-label>
       </q-item-section>
     </q-item>
-    <q-separator color="grey-6" class="q-mb-md" />
+    <q-separator color="grey-6" />
   </div>
 </template>
 <style scoped>

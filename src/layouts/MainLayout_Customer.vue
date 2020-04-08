@@ -45,8 +45,27 @@
         <q-item
           clickable
           tag="a"
-          to="/market"
           style="margin-top:-50px"
+          to="/info"
+          active-class="text-secondary"
+          class="text-primary">
+          <q-item-section
+            avatar
+          >
+            <q-icon name="info" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Wilkommen</q-item-label>
+            <q-item-label caption>
+              Was ist Markt2Go?
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item
+          clickable
+          tag="a"
+          to="/market"
           active-class="text-secondary"
           class="text-primary">
           <q-item-section
@@ -86,7 +105,7 @@
         <div>
           <router-link to="/seller"
           style="text-decoration: none;"
-          v-if="profileValid && $store.state.auth.userDetails.sellerId">
+          v-if="profileValid && $store.state.auth.userDetails && $store.state.auth.userDetails.sellerId">
             <div
               class="text-body1 text-primary"
               >Händlerbereich</div>
@@ -97,7 +116,7 @@
           style="text-decoration: none;">
             <div
               class="text-body1 text-primary"
-              >Kontakt</div>
+              >Impressum und Kontakt</div>
           </router-link>
         </div>
         <div>

@@ -8,49 +8,51 @@
         :breadcrumbList="breadcrumbList">
           {{market.name}} - Marktstände
       </doc-header>
-      <q-input
-      v-model="search"
-      label="Filtern"
-      class="q-pa-sm">
-        <template v-slot:prepend>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-      <p v-if="filteredSellers.length === 0" class="q-pa-sm">
-        <i>Keine Marktstände gefunden.</i>
-      </p>
-      <div class="row">
-        <div
-          v-for="seller in filteredSellers"
-          :key="seller.id"
-          class="col-12 col-md-6 q-pa-sm">
-            <q-card
-              bordered
-              @click="navigateToSeller(market, seller)"
-              class="cursor-pointer no-shadow">
-              <q-item clickable>
-                <q-item-section>
-                  <q-item-label class="text-body1 text-primary">{{seller.name}}</q-item-label>
-                  <q-item-label caption>{{seller.category}}</q-item-label>
-                </q-item-section>
-                <q-item-section class="gt-sm" avatar v-if="seller.creditCardAccepted || seller.debitCardAccepted">
-                    <q-icon  style="font-size: 20px;" name="far fa-credit-card" color="secondary"/>
-                    <q-tooltip content-class="text-body1">
-                      Bargeldlose Zahlungsmöglichkeiten:
-                      {{seller | getPaymentMethodOfSeller}}
-                    </q-tooltip>
-                </q-item-section>
-                <q-item-section avatar class="gt-sm">
-                    <q-icon name="schedule" color="secondary"/>
-                    <q-tooltip content-class="text-body1">
-                      Anfragen bis:
-                      {{ seller.lastReservation | getFormatedDate('d') | getWeekdayStr}}
-                      {{ seller.lastReservation | getFormatedDate('DD.MM. HH:mm')}} Uhr
-                    </q-tooltip>
-                </q-item-section>
-              </q-item>
-            <q-separator />
-          </q-card>
+      <div class="q-pa-md">
+        <q-input
+        v-model="search"
+        label="Filtern"
+        class="q-pa-sm">
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+        <p v-if="filteredSellers.length === 0" class="q-pa-sm">
+          <i>Keine Marktstände gefunden.</i>
+        </p>
+        <div class="row">
+          <div
+            v-for="seller in filteredSellers"
+            :key="seller.id"
+            class="col-12 col-md-6 q-pa-sm">
+              <q-card
+                bordered
+                @click="navigateToSeller(market, seller)"
+                class="cursor-pointer no-shadow">
+                <q-item clickable>
+                  <q-item-section>
+                    <q-item-label class="text-body1 text-primary">{{seller.name}}</q-item-label>
+                    <q-item-label caption>{{seller.category}}</q-item-label>
+                  </q-item-section>
+                  <q-item-section class="gt-sm" avatar v-if="seller.creditCardAccepted || seller.debitCardAccepted">
+                      <q-icon  style="font-size: 20px;" name="far fa-credit-card" color="secondary"/>
+                      <q-tooltip content-class="text-body1">
+                        Bargeldlose Zahlungsmöglichkeiten:
+                        {{seller | getPaymentMethodOfSeller}}
+                      </q-tooltip>
+                  </q-item-section>
+                  <q-item-section avatar class="gt-sm">
+                      <q-icon name="schedule" color="secondary"/>
+                      <q-tooltip content-class="text-body1">
+                        Anfragen bis:
+                        {{ seller.lastReservation | getFormatedDate('d') | getWeekdayStr}}
+                        {{ seller.lastReservation | getFormatedDate('DD.MM. HH:mm')}} Uhr
+                      </q-tooltip>
+                  </q-item-section>
+                </q-item>
+              <q-separator />
+            </q-card>
+          </div>
         </div>
       </div>
     </div>
@@ -70,7 +72,7 @@ export default {
   },
   computed: {
     breadcrumbList: function () {
-      return [{ label: this.market ? this.market.name : '', icon: 'place', to: '' }]
+      return [{ label: this.market ? this.market.name : '', icon: 'place', to: '/market' }]
     },
     filteredSellers: function () {
       // ignore less than three characters
@@ -103,7 +105,7 @@ export default {
         this.$router.push(`/market/${market.id}/seller/${seller.id}`)
       } else {
         this.$q.notify({
-          message: 'Für diesen Markttag akzeptiert der Händler leider keine Bestellunge mehr.',
+          message: 'Für diesen Markttag akzeptiert der Händler leider keine Anfragen mehr.',
           type: 'negative'
         })
       }

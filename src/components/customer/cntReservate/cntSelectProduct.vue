@@ -144,6 +144,8 @@ export default {
     },
     addProduct: function () {
       // validate amount
+      // Take care that amount is numeric
+      this.newProduct.amount = parseFloat(this.newProduct.amount)
       this.$refs.input_amount.validate()
       if (!this.$refs.input_amount.hasError) {
         this.$emit('add-product', { ...this.newProduct })

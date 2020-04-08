@@ -1,11 +1,12 @@
 <template>
   <div>
-      <doc-header
-      :caption="caption"
-      :icon="icon"
-      :breadcrumbList="breadcrumbList">
-        {{title}}
-      </doc-header>
+    <doc-header
+    :caption="caption"
+    :icon="icon"
+    :breadcrumbList="breadcrumbList">
+      {{title}}
+    </doc-header>
+    <div class="q-pa-md">
       <q-input
       v-model="search"
       label="Filtern"
@@ -39,7 +40,8 @@
           </q-card>
         </div>
       </div>
-</div>
+    </div>
+  </div>
 </template>
 <script>
 export default {
