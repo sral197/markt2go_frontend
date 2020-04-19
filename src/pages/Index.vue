@@ -54,7 +54,11 @@
         <h2 class="q-ma-none">Was passiert mit meinen Daten?</h2>
         <div class="q-pa-xs q-pb-md">
           Datenschutz ist uns sehr wichtig. Zur Registrierung ist lediglich Deine E-Mailadresse erforderlich. Wenn Du eine Anfrage an einen Marktstand sendest, so benötigen wir zusätzlich Deinen
-          Namen und Deine Telefonnummer. Die Marktstandbetreiber haben sich verpflichtet diese Daten ausschließlich zur Abwicklung deiner Anfrage zu nutzen und im Anschluss an den Markttag zu löschen. Die Daten sind erforderlich, damit der Händler Dich bei Rückfragen zu Deinem Warenkorb
+          Namen und Deine Telefonnummer.
+          <!--
+          Die Marktstandbetreiber haben sich verpflichtet diese Daten ausschließlich zur Abwicklung deiner Anfrage zu nutzen und im Anschluss an den Markttag zu löschen.
+          -->
+          Die Daten sind erforderlich, damit der Händler Dich bei Rückfragen zu Deinem Warenkorb
           telefonisch kontaktieren kann sowie Deine Anfragen am Markttag zuordnen zu können. Wir löschen am Ende des Markttages alle zugehörigen Anfragen (inkl. Telefonnummer und Name) aus unserer Datenbank.
           Dein Profil kannst du selbstverständlich ebenfalls jederzeit löschen.
         </div>
