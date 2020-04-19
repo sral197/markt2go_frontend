@@ -8,12 +8,17 @@ const routes = [
     children: [
       { path: '', redirect: 'info' },
       { path: 'info', component: () => import('pages/Index.vue') },
-      { path: 'market', component: () => import('pages/customer/ShowMarkets.vue') },
-      { path: 'market/:marketID', component: () => import('pages/customer/ShowSeller.vue') },
-      { path: 'market/:marketID/seller/:sellerID', component: () => import('pages/customer/Reservate.vue') },
-      { path: 'status/:reservationID', component: () => import('pages/customer/ShowReservationStatus.vue'), beforeEnter: authGuard },
-      { path: 'profile', component: () => import('pages/customer/ShowProfile.vue'), beforeEnter: authGuard },
-      { path: 'reservations', component: () => import('pages/customer/MyReservations.vue'), beforeEnter: authGuard },
+      {
+        path: 'market',
+        component: () => import('pages/customer/BannerRouterView.vue'),
+        children: [
+          { path: '', component: () => import('pages/customer/Markets.vue') },
+          { path: ':marketID', component: () => import('pages/customer/Seller.vue') },
+          { path: ':marketID/:sellerID', component: () => import('pages/customer/Reservate.vue') }
+        ]
+      },
+      { path: 'status/:reservationID', component: () => import('pages/customer/ReservationStatus.vue'), beforeEnter: authGuard },
+      { path: 'profile', component: () => import('pages/customer/Profile.vue'), beforeEnter: authGuard },
       { path: 'logout', component: () => import('pages/Logout.vue') },
       { path: 'disclaimer', component: () => import('pages/Disclaimer.vue') },
       { path: 'contact', component: () => import('pages/Disclaimer.vue') },

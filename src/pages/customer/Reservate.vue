@@ -3,18 +3,11 @@
     <div class="full-width"
     v-if="market && sellerDetails">
       <doc-header
-      :caption="headerCaption"
       icon="storefront"
       :breadcrumbList="breadcrumbList">
-        {{sellerDetails.name}}
+        Dein Einkauf bei {{sellerDetails.name}}
       </doc-header>
-        <div class="q-pa-md">
-          <seller-desc
-            :sellerDetails="sellerDetails"
-            :reservationAllowed="reservationAllowed"
-            class="q-pa-sm">
-          </seller-desc>
-          <q-separator class="q-ma-sm" />
+        <div class="q-px-md">
           <q-stepper
             v-model="step"
             ref="stepper"
@@ -30,10 +23,22 @@
               icon="settings"
               :done="step > 1"
               :header-nav="step > 1">
+            <h2
+            v-if="step === 1"
+            class="q-my-none q-px-sm">
+              Welche Produkte möchtest du bei {{sellerDetails.name}} anfragen?
+            </h2>
+              <q-separator />
+            <seller-desc
+              :sellerDetails="sellerDetails"
+              :reservationAllowed="reservationAllowed"
+              class="q-px-sm">
+            </seller-desc>
             <step-fill-basked
               :groups="sellerDetails.portfolio"
               :reservationAllowed="reservationAllowed"
               :newReservation="newReservation"
+              :sellerName="sellerDetails.name"
             >
             </step-fill-basked>
             </q-step>
@@ -44,6 +49,13 @@
               :done="step > 2"
               :header-nav="step > 2"
             >
+              <h2
+              v-if="step === 2"
+              class="q-my-none q-px-sm">
+                Wann möchtest du deine Produkte am
+                {{market.dayOfWeek | getWeekdayStr}} abholen?
+              </h2>
+              <q-separator />
               <step-select-timeslot
                 :timeslot="newReservation.timeslot"
                 :marketID="$route.params.marketID"
@@ -54,21 +66,34 @@
 
             <q-step
               :name="3"
-              title="Bestätigung"
+              title="Kontaktdaten"
               icon="assignment"
               :header-nav="step > 3"
             >
+              <h2
+              v-if="step === 3"
+              class="q-my-none q-px-sm">
+                Sind folgende Angaben korrekt?
+              </h2>
+              <q-separator />
               <step-confirm-reservation
+                ref="stepconfirmreservation"
                 :items="newReservation.items"
                 :timeslot="newReservation.timeslot"
                 :sellerDetails="sellerDetails"
-                :market="market">
+                :market="market"
+                :user="newReservation.user">
               </step-confirm-reservation>
             </q-step>
 
             <template v-slot:navigation>
-              <q-stepper-navigation>
-                <div  align="right">
+              <q-stepper-navigation class="row">
+                <div class="col-12 col-6-md">
+                  <q-btn @click="showBasket = true" flat v-if="step === 1 && reservationAllowed" icon="shopping_basket" label="Dein Warenkorb" color="primary">
+                    <q-badge color="secondary" floating>{{newReservation.items.length}}</q-badge>
+                  </q-btn>
+                </div>
+                <div class="col-12 col-6-md" align="right">
                   <q-btn
                     flat
                     v-if="step > 1"
@@ -84,17 +109,26 @@
               </q-stepper-navigation>
             </template>
           </q-stepper>
+          <q-dialog v-model="showBasket">
+            <basket-overview :items="newReservation.items" />
+          </q-dialog>
         </div>
       </div>
   </q-page>
 </template>
+<style scoped>
+.q-stepper__step >>> .q-stepper__step-inner {
+  padding-top: 0px !important
+}
+</style>
 
 <script>
-import sellerDesc from 'components/customer/cntReservate/sellerDesc'
+import sellerDesc from 'components/customer/Reservate/sellerDesc'
 
-import stepFillBasked from 'components/customer/cntReservate/step1FillBasket'
-import stepSelectTimeslot from 'components/customer/cntReservate/step2SelectTimeslot'
-import stepConfirmReservation from 'components/customer/cntReservate/step3ConfirmReservation'
+import basketOverview from 'components/customer/Reservate/step1FillBasketBasketOverview'
+import stepFillBasked from 'components/customer/Reservate/step1FillBasket'
+import stepSelectTimeslot from 'components/customer/Reservate/step2SelectTimeslot'
+import stepConfirmReservation from 'components/customer/Reservate/step3ConfirmReservation'
 
 export default {
   name: 'PageIndex',
@@ -102,7 +136,8 @@ export default {
     sellerDesc,
     stepFillBasked,
     stepSelectTimeslot,
-    stepConfirmReservation
+    stepConfirmReservation,
+    basketOverview
   },
   data  () {
     return {
@@ -114,8 +149,16 @@ export default {
         timeslot: {
           timestampUTC: null,
           reservationCount: null
+        },
+        user: {
+          firstname: '',
+          lastname: '',
+          phone: '',
+          rememberMe: false,
+          rulesAccepted: false
         }
-      }
+      },
+      showBasket: false
     }
   },
   computed: {
@@ -133,11 +176,13 @@ export default {
       return !this.$auth.loading &&
         this.$auth.isAuthenticated &&
         this.$auth.user.email_verified &&
-        !this.$store.state.auth.loading &&
-        this.$store.state.auth.userExists &&
-        this.$store.state.auth.userDetails.isValidated &&
         this.sellerDetails &&
         this.sellerDetails.reservationPossible
+    }
+  },
+  watch: {
+    '$store.state.auth.loading': function () {
+      this.fillOutUserDetails()
     }
   },
   methods: {
@@ -164,8 +209,11 @@ export default {
         }
         return this.$refs.stepper.next()
       }
-      // Send order
-      this.sendOrder()
+      // Last step
+      if (this.$refs.stepconfirmreservation.validate()) {
+        // Send order
+        this.sendOrder()
+      }
     },
     // Get the selected seller via REST API
     getMarketSellerDetails: async function (sellerID, marketID) {
@@ -196,14 +244,22 @@ export default {
           sellerID: this.sellerDetails.id,
           pickup: this.newReservation.timeslot.timestampUTC,
           userComment: '', // Feature not implemented yet.
-          items: []
+          items: [],
+          firstName: this.newReservation.user.firstname,
+          lastName: this.newReservation.user.lastname,
+          phone: this.newReservation.user.phone,
+          rememberMe: this.newReservation.user.rememberMe,
+          rulesAccepted: this.newReservation.user.rulesAccepted
         }
         this.newReservation.items.forEach(element => {
           newReservation.items.push(element)
         })
+        // sent reservation
         var response = await this.$axios.post('/api/reservation/',
           newReservation,
           this.$auth.getAxiosHeader())
+        // Get new user data (may have changed)
+        await this.$store.dispatch('auth/updateUserData')
         // success
         this.$q.notify({
           message: 'Bestellung wurde erfolgreich übermittelt.',
@@ -214,12 +270,22 @@ export default {
         console.error(error)
         this.$router.push({ name: 'errorPage' })
       }
+    },
+    fillOutUserDetails: function () {
+      if (!this.$store.state.auth.loading &&
+      this.$store.state.auth.userExists &&
+      this.$store.state.auth.userDetails) {
+        this.newReservation.user.firstname = this.$store.state.auth.userDetails.firstname
+        this.newReservation.user.lastname = this.$store.state.auth.userDetails.lastname
+        this.newReservation.user.phone = this.$store.state.auth.userDetails.phone
+      }
     }
   },
   mounted: function () {
     const marketID = this.$route.params.marketID
     const sellerID = this.$route.params.sellerID
     this.getMarketSellerDetails(sellerID, marketID)
+    this.fillOutUserDetails()
   }
 }
 </script>

@@ -17,7 +17,7 @@
         v-ripple
         v-for="reservation in reservations" :key="reservation.id">
         <q-item-section>
-          <q-item-label>{{reservation.user.lastname}}, {{reservation.user.firstname}}</q-item-label>
+          <q-item-label>{{reservation.lastname}}, {{reservation.firstname}}</q-item-label>
           <q-item-label caption>
             {{reservation.pickup | getFormatedDate('d') | getWeekdayStr}}, den
             {{reservation.pickup | getFormatedDate('DD.MM - HH:mm')}}

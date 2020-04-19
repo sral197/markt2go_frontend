@@ -8,11 +8,23 @@
     class="text-primary"
     active-color="secondary">
       <q-tab
-      v-for="group in groups"
+      v-for="group in groupsVisible"
       :key="group.name"
       :name="group.name"
       :label="group.name">
       </q-tab>
+      <q-btn-dropdown
+        v-if="groupsHidden.length !== 0"
+        auto-close stretch flat label="Mehr...">
+        <q-list>
+          <q-item clickable
+          @click="tab = group.name"
+          v-for="group in groupsHidden"
+          :key="group.name">
+            <q-item-section>{{group.name}}</q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
     </q-tabs>
     <q-tab-panels
       v-model="tab">
@@ -24,8 +36,8 @@
         <q-list
         separator>
           <q-item
-          :clickable="reservationAllowed"
-          :v-ripple="reservationAllowed"
+          clickable
+          v-ripple
           v-for="product in group.products"
           :key="product.name"
           @click="openDialog(product)">
@@ -35,7 +47,7 @@
             <q-item-section side>
               {{product.price | getAsCurrency}}/{{product.unit}}
             </q-item-section>
-            <q-item-section avatar v-if="reservationAllowed" side>
+            <q-item-section avatar side>
               <q-icon name="add" color="primary" />
             </q-item-section>
           </q-item>
@@ -100,8 +112,18 @@ import { unitSettings, units } from 'assets/app.config'
 
 export default {
   props: {
-    groups: Array,
-    reservationAllowed: Boolean
+    groups: {
+      type: Array,
+      required: true
+    },
+    reservationAllowed: {
+      type: Boolean,
+      required: true
+    },
+    sellerName: {
+      type: String,
+      required: true
+    }
   },
   data: function () {
     return {
@@ -118,6 +140,17 @@ export default {
       unitSettings: unitSettings
     }
   },
+  computed: {
+    splitIndex: function () {
+      return this.$q.screen.gt.xs ? 3 : 1
+    },
+    groupsVisible: function () {
+      return this.groups.slice(0, this.splitIndex)
+    },
+    groupsHidden: function () {
+      return this.groups.slice(this.splitIndex, this.groups.length)
+    }
+  },
   mounted: function () {
     // select first tab
     if (this.groups &&
@@ -129,7 +162,7 @@ export default {
     openDialog: function (productDesc) {
       if (this.reservationAllowed) {
         this.newProduct = {
-          amount: this.unitSettings[productDesc.unit].chips[0].amount,
+          amount: parseFloat(this.unitSettings[productDesc.unit].chips[0].amount),
           name: productDesc.name,
           unit: productDesc.unit,
           price: productDesc.price,
@@ -137,6 +170,41 @@ export default {
           articleId: productDesc.articleId
         }
         this.dialogOpen = true
+      } else {
+        // reservation is not allowed
+        if (!this.$auth.loading &&
+          this.$auth.isAuthenticated &&
+          this.$auth.user &&
+          !this.$auth.user.email_verified
+        ) {
+          // profile exists, bus is not verified/confirmed
+          this.$q.dialog({
+            title: 'Bitte bestätige deine E-Mail-Adresse',
+            message: `Um eine Anfrage an den ${this.sellerName} senden zu können, musst du deine E-Mail-Adresse zunächst verifizieren. Öffne dazu dein E-Mail Postfach z.B. in Outlook und klicke auf den Link "E-Mail Adresse bestätigen", den du von uns bekommen hast.`,
+            persistent: true,
+            ok: {
+              label: 'Zurück'
+            }
+          })
+        } else {
+          // user does not have an profile
+          this.$q.dialog({
+            title: 'Bitte logge dich ein',
+            message: `Um eine Anfrage an den ${this.sellerName} senden zu können, musst du dich einloggen. Falls du noch kein Profil auf Markt2Go besitzt, kannst du dies hier kostenfrei erstellen. Lediglich deine E-Mail Adresse ist erforderlich.`,
+            persistent: true,
+            ok: {
+              push: true,
+              label: 'Zum Login'
+            },
+            cancel: {
+              push: true,
+              label: 'Abbrechen'
+            }
+          }).onOk(() => {
+            const targetURL = `${window.location}`
+            this.$auth.loginWithRedirect({ redirect_uri: targetURL })
+          })
+        }
       }
     },
     setAmountUnit: function (amount, unit) {

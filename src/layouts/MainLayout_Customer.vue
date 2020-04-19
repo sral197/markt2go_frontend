@@ -12,19 +12,19 @@
         <q-separator dark vertical />
         <q-toolbar-title>
           Markt2Go.de
-          <span class="gt-sm"> - Bestell deinen Wochenmarkteinkauf vor!</span>
+          <span class="gt-sm"> - Stell dein Wochenmarkteinkauf online zusammen!</span>
         </q-toolbar-title>
         <q-separator dark vertical />
         <q-btn
           stretch
           flat
-          label="Logout"
+          label="Abmelden"
           @click="logout"
           v-if="!$auth.loading && $auth.isAuthenticated" />
         <q-btn
           stretch
           flat
-          label="Login"
+          label="Anmelden"
           @click="login"
           v-if="!$auth.loading && !$auth.isAuthenticated"
           />
@@ -38,7 +38,6 @@
         <q-item>
             <q-img
               src="/statics/logo.png"
-              spinner-color="white"
               style="height: 200px; max-width: 200px;margin-top:-30px"
             />
         </q-item>
@@ -77,7 +76,7 @@
           <q-item-section>
             <q-item-label>Märkte</q-item-label>
             <q-item-label caption>
-              Zeige alle Wochenmärkte
+              Stell deinen Wochenmarkteinkauf zusammen
             </q-item-label>
           </q-item-section>
         </q-item>
@@ -94,9 +93,9 @@
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>Profildaten</q-item-label>
+            <q-item-label>Profildaten und Anfragen</q-item-label>
             <q-item-label caption>
-              Deine persönlichen Daten
+              Deine persönlichen Daten sowie aktuelle Anfragen
             </q-item-label>
           </q-item-section>
         </q-item>
@@ -104,65 +103,27 @@
       <div class="fixed-bottom q-pa-md">
         <div>
           <router-link to="/seller"
-          style="text-decoration: none;"
-          v-if="profileValid && $store.state.auth.userDetails && $store.state.auth.userDetails.sellerId">
-            <div
-              class="text-body1 text-primary"
-              >Händlerbereich</div>
+          class="router-link text-body1"
+          v-if="showSellerLink">
+              Händlerbereich
           </router-link>
         </div>
         <div>
           <router-link to="/contact"
-          style="text-decoration: none;">
-            <div
-              class="text-body1 text-primary"
-              >Impressum und Kontakt</div>
+          class="router-link text-body1">
+            Impressum und Kontakt
           </router-link>
         </div>
         <div>
           <router-link to="/privacy"
-          style="text-decoration: none;">
-            <div class="text-body1 text-primary">Hinweise zum Datenschutz</div>
+          class="router-link text-body1">
+            Hinweise zum Datenschutz
           </router-link>
         </div>
       </div>
     </q-drawer>
 
     <q-page-container>
-      <div
-        class="q-px-md q-pt-md doc-main"
-        style="font-weight: 500;">
-        <div>
-          <!-- Alert to ask user to register -->
-          <div
-            v-if="showAlertUserNotRegistered"
-            class="doc-note doc-note--warning">
-            <p class="q-ma-none text-body1 text-weight-bold">Login erforderlich</p>
-            <p class="q-ma-none text-body2">
-              <a href="#" @click="login()">Hier</a> geht es zur Registrierung und zum Login.
-            </p>
-          </div>
-          <!-- Alert to ask user to completly submit account details -->
-          <div
-            v-if="showAlertUserNotVerified"
-            class="doc-note doc-note--warning">
-            <p class="text-body1 text-weight-bold">Profil noch nicht verifiziert</p>
-            <ul>
-              <li
-                v-if="!$auth.user.email_verified"
-                class="q-ma-none text-body2">
-                Deine Emailadresse wurde noch nicht bestätigt. Bitte öffne dein Email Postfach und klicke auf den Bestätigungslink.
-              </li>
-              <li
-                v-if="!$store.state.auth.userExists || !$store.state.auth.userDetails.isValidated"
-                class="q-ma-none text-body2">
-                <a @click="$router.push('/profile')">
-                  Dein Profil ist noch nicht durch uns verifiziert. Bitte vervollständige die Kontaktinformationen <a href="#profile" to="$router.push('/profile')">hier</a>. Die anschließende Verifizierung kann ein paar Stunden dauern.
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
         <!--
         Auth Loading: {{ this.$auth.loading }} <br />
         User Loading: {{ this.$store.state.auth.loading }} <br />
@@ -171,30 +132,22 @@
         User isValidated: {{ this.$store.state.auth.userDetails ? this.$store.state.auth.userDetails.isValidated : '' }} <br />
         Auth emailVerified: {{ this.$auth.user.email_verified }} <br />
         -->
-      </div>
       <router-view class="doc-main q-pa-xs" />
     </q-page-container>
   </q-layout>
 </template>
-<style scoped>
-  .doc-note--warning {
-      background-color: #f8dca0;
-      border-color: #efaf21;;
-  }
-  .doc-note {
-      border-radius: 4px;
-      padding: 16px 24px;
-      font-size: 1em;
-      border-width: 0 5px;
-      border-style: solid;
-      letter-spacing: .5px;
-  }
-  .doc-main {
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-  }
-</style>
+<style lang="sass" scoped>
+.doc-main
+  max-width: 900px
+  margin-left: auto
+  margin-right: auto
+
+.router-link
+  text-decoration: none
+  color: $primary
+  &:hover
+    color: $secondary
+</style>>
 <script>
 
 export default {
@@ -209,29 +162,13 @@ export default {
     }
   },
   computed: {
-    showAlertUserNotRegistered: function () {
-      return (!this.$auth.loading &&
-              !this.$auth.isAuthenticated &&
-              this.$route.path !== '/logout')
-    },
-    showAlertUserNotVerified: function () {
-      return (!this.$auth.loading &&
-        this.$auth.isAuthenticated &&
-        !this.$store.state.auth.loading && (
-        !this.$store.state.auth.userExists ||
-        !this.$store.state.auth.userDetails.isValidated ||
-        !this.$auth.user.email_verified
-      )
-      )
-    },
-    profileValid: function () {
-      return !this.$auth.loading &&
-        this.$auth.isAuthenticated &&
-        this.$auth.user.email_verified
-    },
     showProgressSpinner: function () {
       return this.$auth.loading ||
         this.axiosRequestCounter > 0
+    },
+    showSellerLink: function () {
+      return (this.$store.state.auth.userDetails &&
+      this.$store.state.auth.userDetails.sellerId)
     }
   },
   watch: {

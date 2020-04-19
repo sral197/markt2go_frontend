@@ -6,9 +6,8 @@
         ref="cnt_selectMarket"
         :markets="markets"
         title='Wochenmärkte in deiner Region'
-        caption='Nutze den Filter um nach deinem Wochenmarkt zu suchen'
         icon='place'
-        :breadcrumbList="breadcrumbList"
+        subheader="Auf welchem Wochenmarkt möchtest du etwas anfragen?"
         v-on:marketSelected="navigateToMarket">
       </cnt-select-market>
     </div>

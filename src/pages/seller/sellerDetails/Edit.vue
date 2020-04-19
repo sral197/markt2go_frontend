@@ -39,7 +39,7 @@
         <q-btn
           @click="updateSellerDetails"
           color="primary"
-          label="Übernehmen" />
+          label="Speichern" />
       </div>
       <!-- Dialog -->
       <q-dialog v-model="showPreview">
@@ -62,9 +62,9 @@
 
 <script>
 import editSellerDetails from 'components/seller/sellerProfile/editSellerDetails'
-import editProducts from 'components/seller/sellerProfile/editProducts'
-import step1FillBasket from 'components/customer/cntReservate/step1FillBasket'
-import sellerDesc from 'components/customer/cntReservate/sellerDesc'
+import editProducts from 'components/seller/sellerProfile/editOffer'
+import step1FillBasket from 'components/customer/Reservate/step1FillBasket'
+import sellerDesc from 'components/customer/Reservate/sellerDesc'
 
 export default {
   components: {

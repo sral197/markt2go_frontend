@@ -1,8 +1,5 @@
 <template>
   <div class="row">
-    <div class="col-12 text-body2">
-      In Klammern ist die Anzahl der Kunden angegeben, die zu diesem Zeitpunkt ebenfalls ihren Einkauf abholen möchten.
-    </div>
     <div
       class="col-6 col-md-3 q-pa-xs"
       v-for="slot in slots"
@@ -16,6 +13,9 @@
         @input="$emit('selectTimeslot',slot)">
         {{slot.timestampUTC | getFormatedDate('HH:mm')}} ({{slot.reservationCount}})
       </q-radio>
+    </div>
+    <div class="col-12 text-body2">
+      In Klammern ist die Anzahl der Kunden angegeben, die zu diesem Zeitpunkt ebenfalls ihren Einkauf abholen möchten.
     </div>
   </div>
 </template>

@@ -27,4 +27,8 @@ export default ({ app, router, store, Vue }) => {
   Vue.filter('getAsCurrency', function (number) {
     return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number)
   })
+  // Decimal
+  Vue.filter('getAsDecimal', function (number) {
+    return new Intl.NumberFormat('de-DE', { style: 'decimal' }).format(number)
+  })
 }

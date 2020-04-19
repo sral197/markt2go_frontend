@@ -1,4 +1,10 @@
-import Vue from 'vue'
 import axios from 'axios'
 
-Vue.prototype.$axios = axios
+const axiosInstance = axios.create()
+
+export default ({ app, router, store, Vue }) => {
+  // Set axios instance on app
+  Vue.prototype.$axios = axiosInstance
+}
+
+export const getAxiosInstance = () => axiosInstance

@@ -1,6 +1,6 @@
 {
   "name": "markt2go",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "description": "Markt2Go.de - Bestell deinen Einkauf vor!",
   "productName": "Markt2Go.de",
   "cordovaId": "org.cordova.quasar.app",

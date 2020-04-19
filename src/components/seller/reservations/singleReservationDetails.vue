@@ -13,10 +13,10 @@
           stack-label
           readonly
           ref="input_name"
-          class="q-pa-md col-12 col-md-3">
+          class="q-pa-md col-12 col-md-4">
           <template v-slot:control>
           <div class="self-center full-width no-outline" tabindex="0">
-              {{`${reservation.user.lastname}, ${reservation.user.firstname}`}}
+              {{`${reservation.lastname}, ${reservation.firstname}`}}
           </div>
           </template>
       </q-field>
@@ -27,7 +27,7 @@
           stack-label
           readonly
           ref="input_pickup"
-          class="q-pa-md col-12 col-md-3">
+          class="q-pa-md col-12 col-md-4">
           <template v-slot:control>
           <div class="self-center full-width no-outline" tabindex="0">
               {{reservation.pickup | getFormatedDate('d') | getWeekdayStr}},
@@ -42,24 +42,10 @@
           stack-label
           readonly
           ref="input_phone"
-          class="q-pa-md col-12 col-md-3">
+          class="q-pa-md col-12 col-md-4">
           <template v-slot:control>
           <div class="self-center full-width no-outline" tabindex="0">
-              {{reservation.user.phone}}
-          </div>
-          </template>
-      </q-field>
-      <q-field
-          dense
-          label='Email'
-          bottom-slots
-          stack-label
-          readonly
-          ref="input_email"
-          class="q-pa-md col-12 col-md-3">
-          <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">
-            {{reservation.user.mail}}
+              {{reservation.phone}}
           </div>
           </template>
       </q-field>

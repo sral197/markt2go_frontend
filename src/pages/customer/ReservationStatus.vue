@@ -46,7 +46,7 @@
               {{reservation.pickup | getFormatedDate('d')| getWeekdayStr}}, {{reservation.pickup | getFormatedDate('DD.MM.')}}
               gegen {{reservation.pickup | getFormatedDate('HH:mm')}} Uhr</u>
             </q-item-label>
-          <q-item-label caption>Bitte hol deine Bestellung am Markttag
+          <q-item-label caption>Bitte hole deine Bestellung am Markttag
              zu der angegebenen Uhrzeit ab. Wir bitten dich - sofern möglich - bargeldlos zu bezahlen.</q-item-label>
         </q-item-section>
       </q-item>

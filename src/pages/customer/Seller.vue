@@ -3,12 +3,18 @@
     <div class="full-width"
     v-if="market && filteredSellers">
       <doc-header
-        caption="Nutze den Filter um nach einem bestimmten Marktstand zu suchen"
+        caption=""
         icon="storefront"
         :breadcrumbList="breadcrumbList">
-          {{market.name}} - Marktstände
+          {{market.name}}
+          <!--am {{market.dayOfWeek | getWeekdayStr}}
+          {{market.startTime}} - {{market.endTime}} Uhr -->
       </doc-header>
       <div class="q-pa-md">
+        <h2
+        class="q-my-none q-px-sm">
+          Bei welchem Marktstand möchtest du etwas für {{market.dayOfWeek | getWeekdayStr}}, den {{market.next | getFormatedDate('DD.MM.')}} anfragen?
+        </h2>
         <q-input
         v-model="search"
         label="Filtern"
@@ -102,11 +108,18 @@ export default {
     },
     navigateToSeller: function (market, seller) {
       if (seller.reservationPossible) {
-        this.$router.push(`/market/${market.id}/seller/${seller.id}`)
+        this.$router.push(`/market/${market.id}/${seller.id}`)
       } else {
-        this.$q.notify({
-          message: 'Für diesen Markttag akzeptiert der Händler leider keine Anfragen mehr.',
-          type: 'negative'
+        // Reservations not accepted by seller anymore
+        const dayOfWeekLastReservation = this.$options.filters.getFormatedDate(seller.lastReservation, 'd')
+        const dayOfWeekLastReservationString = this.$options.filters.getWeekdayStr(dayOfWeekLastReservation)
+        const timeLastReservation = this.$options.filters.getFormatedDate(seller.lastReservation, 'HH:mm')
+        const marketDay = this.$options.filters.getWeekdayStr(this.market.dayOfWeek)
+        const toDateString = `${dayOfWeekLastReservationString} ${timeLastReservation} Uhr`
+        this.$q.dialog({
+          title: 'Anfrage für diese Woche sind nicht mehr möglich',
+          message: `Für diese Woche ${marketDay} akzeptiert ${seller.name} keine Anfragen mehr. Der Händler akzeptiert Anfragen bis ${toDateString}.`,
+          persistent: true
         })
       }
     }

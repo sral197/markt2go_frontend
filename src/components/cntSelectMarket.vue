@@ -7,6 +7,10 @@
       {{title}}
     </doc-header>
     <div class="q-pa-md">
+      <h2
+      class="q-my-none q-px-sm" v-if="!!subheader">
+        {{subheader}}
+      </h2>
       <q-input
       v-model="search"
       label="Filtern"
@@ -33,7 +37,7 @@
                 <q-item-label caption>
                   {{market.location}} -
                   {{market.dayOfWeek | getWeekdayStr}}, {{market.next | getFormatedDate('DD.MM.')}}
-                  {{market.startTime}} bis {{market.endTime}}
+                  {{market.startTime}} bis {{market.endTime}} Uhr
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -51,7 +55,8 @@ export default {
     title: String,
     icon: String,
     markets: Array,
-    breadcrumbList: Array
+    breadcrumbList: Array,
+    subheader: String
   },
   data: function () {
     return {

@@ -40,18 +40,11 @@
         </q-item>
       </div>
     </div>
-    <q-separator />
     <div class="row q-my-md" >
-      <div class="col-12 text-h6 headerColor">Beschreibung des Händlers</div>
       <div class="text-body2">{{sellerDetails.description}}</div>
     </div>
   </div>
 </template>
-<style scoped>
-  .headerColor {
-    color: rgba(0, 0, 0, 0.7)
-  }
-</style>
 <script>
 
 export default {
